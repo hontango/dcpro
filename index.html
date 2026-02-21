@@ -1,0 +1,2109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>DC Pro</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DC Pro">
+<meta name="theme-color" content="#0f2460">
+<script>
+const _m={name:"DC Pro",short_name:"DC Pro",display:"standalone",background_color:"#0f2460",theme_color:"#0f2460",start_url:"./"};
+const _b=new Blob([JSON.stringify(_m)],{type:'application/json'});
+const _l=document.createElement('link');_l.rel='manifest';_l.href=URL.createObjectURL(_b);
+document.currentScript.parentNode.appendChild(_l);
+</script>
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjQwIiBmaWxsPSIjMGYyNDYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iOTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJjZW50cmFsIj7wn5KcPC90ZXh0Pjwvc3ZnPg==">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#0f2460;--blue:#1d4ed8;--accent:#2563eb;--secondary:#8b5cf6;
+  --gold:#f59e0b;--green:#10b981;--red:#ef4444;
+  --bg:#f0f4ff;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;
+  --nav-h:64px;
+}
+html{height:100%;}
+body{height:100%;overflow:hidden;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;-webkit-text-size-adjust:100%;}
+
+/* ===== ボトムナビ ===== */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  height:calc(var(--nav-h) + env(safe-area-inset-bottom));
+  background:#fff;
+  border-top:2px solid var(--border);
+  display:flex;align-items:flex-start;
+  padding-top:4px;
+  z-index:1000;
+  box-shadow:0 -4px 20px rgba(0,0,0,.08);
+}
+.nav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  padding:8px 4px;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:all .2s;
+}
+.nav-icon{font-size:24px;line-height:1;margin-bottom:4px;transition:transform .2s;}
+.nav-label{font-size:10px;font-weight:600;color:var(--muted);transition:color .2s;}
+.nav-item.active .nav-icon{transform:scale(1.15);}
+.nav-item.active .nav-label{color:var(--navy);}
+.nav-dot{width:5px;height:5px;border-radius:50%;background:var(--navy);margin-top:3px;opacity:0;}
+.nav-item.active .nav-dot{opacity:1;}
+
+/* ===== ページ共通 ===== */
+.page{
+  display:none;
+  flex-direction:column;
+  height:100%;
+  padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom));
+  overflow:hidden;
+}
+.page.active{display:flex;}
+
+/* ===== ページヘッダー ===== */
+.page-hdr{
+  flex-shrink:0;
+  background:linear-gradient(135deg,var(--navy),#1d4ed8);
+  color:#fff;
+  padding:max(env(safe-area-inset-top),16px) 20px 20px;
+}
+.page-hdr-row{display:flex;align-items:center;justify-content:space-between;}
+.page-hdr h1{font-family:'Outfit',sans-serif;font-size:22px;font-weight:800;}
+.page-hdr p{font-size:12px;opacity:.85;margin-top:4px;}
+.badge{display:inline-block;background:var(--gold);color:#1e293b;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+
+/* ===== スクロールエリア ===== */
+.scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+
+/* ===== ホーム画面 ===== */
+.home-content{padding:20px 16px 10px;}
+.home-hero{
+  background:linear-gradient(135deg,var(--navy),#1d4ed8);
+  border-radius:20px;padding:28px 24px;color:#fff;margin-bottom:20px;
+  position:relative;overflow:hidden;
+}
+.home-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(255,255,255,.15),transparent 70%);border-radius:50%;}
+.hero-label{font-size:12px;opacity:.8;margin-bottom:6px;font-weight:600;letter-spacing:1px;}
+.hero-title{font-family:'Outfit',sans-serif;font-size:28px;font-weight:800;margin-bottom:10px;position:relative;}
+.hero-sub{font-size:13px;opacity:.85;line-height:1.6;position:relative;}
+.hero-btns{display:flex;gap:12px;margin-top:20px;position:relative;}
+.hero-btn{
+  flex:1;padding:13px;border:none;border-radius:12px;
+  font-size:14px;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:all .2s;
+}
+.hero-btn.primary{background:#fff;color:var(--navy);}
+.hero-btn.secondary{background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4);}
+.hero-btn:active{transform:scale(.97);}
+
+.home-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.home-card{
+  background:#fff;border-radius:16px;padding:18px 16px;
+  border:1.5px solid var(--border);cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.04);
+  transition:all .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.home-card:active{transform:scale(.97);}
+.card-icon{font-size:28px;margin-bottom:8px;}
+.card-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.card-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+
+.reform-banner{
+  background:linear-gradient(135deg,#fef3c7,#fde68a);
+  border:2px solid var(--gold);border-radius:16px;
+  padding:16px;margin-bottom:20px;
+  display:flex;gap:12px;align-items:flex-start;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.banner-icon{font-size:24px;flex-shrink:0;}
+.banner-title{font-size:14px;font-weight:700;color:#92400e;margin-bottom:4px;}
+.banner-text{font-size:12px;color:#78350f;line-height:1.6;}
+
+/* ===== シミュレーター ===== */
+.sim-hdr{flex-shrink:0;}
+.progress-bar-wrap{background:var(--bg);padding:16px 20px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.progress-steps{display:flex;justify-content:space-between;position:relative;margin-bottom:10px;}
+.prog-line{position:absolute;top:16px;left:0;right:0;height:3px;background:var(--border);z-index:0;}
+.prog-line-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--secondary));transition:width .5s ease;}
+.prog-step{display:flex;flex-direction:column;align-items:center;position:relative;z-index:1;flex:1;}
+.step-circle{width:34px;height:34px;border-radius:50%;background:#fff;border:3px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;margin-bottom:5px;transition:all .3s;}
+.prog-step.active .step-circle{background:linear-gradient(135deg,var(--accent),var(--secondary));color:#fff;border-color:var(--accent);transform:scale(1.1);}
+.prog-step.done .step-circle{background:var(--green);color:#fff;border-color:var(--green);}
+.step-lbl{font-size:10px;font-weight:600;color:var(--muted);text-align:center;}
+.prog-step.active .step-lbl{color:var(--accent);font-weight:700;}
+
+.sim-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.step-content{display:none;padding:24px 18px;}
+.step-content.active{display:block;animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.step-title{font-family:'Outfit',sans-serif;font-size:24px;font-weight:800;margin-bottom:6px;color:var(--text);}
+.step-desc{color:var(--muted);font-size:14px;margin-bottom:24px;line-height:1.6;}
+
+/* フォーム */
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-bottom:20px;}
+.form-group{margin-bottom:18px;}
+.form-label{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--text);margin-bottom:8px;font-size:14px;}
+.tip-icon{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;background:var(--border);color:var(--muted);border-radius:50%;font-size:11px;cursor:pointer;transition:all .2s;flex-shrink:0;}
+.tip-icon.active{background:var(--accent);color:#fff;}
+.tooltip-box{display:none;background:var(--navy);color:#fff;font-size:12px;line-height:1.6;padding:10px 14px;border-radius:8px;margin-top:6px;position:relative;z-index:10;}
+.tooltip-box.show{display:block;}
+.form-input,.form-select{width:100%;padding:12px 14px;border:2px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;transition:all .2s;background:#fff;color:var(--text);-webkit-appearance:none;}
+.form-input:focus,.form-select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.1);}
+
+.radio-group{display:flex;gap:10px;flex-wrap:wrap;}
+.radio-opt{position:relative;}
+.radio-opt input{position:absolute;opacity:0;}
+.radio-lbl{display:flex;align-items:center;gap:6px;padding:9px 16px;border:2px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;font-size:14px;font-weight:500;}
+.radio-opt input:checked+.radio-lbl{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* 配分スライダー */
+.alloc-box{background:var(--bg);padding:20px;border-radius:14px;margin-bottom:20px;}
+.alloc-item{margin-bottom:18px;}
+.alloc-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.alloc-name{font-weight:600;font-size:14px;color:var(--text);}
+.alloc-val{font-weight:700;color:var(--accent);font-size:16px;}
+.alloc-slider{width:100%;height:8px;border-radius:5px;background:var(--border);outline:none;-webkit-appearance:none;cursor:pointer;}
+.alloc-slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;transition:all .2s;box-shadow:0 2px 6px rgba(37,99,235,.3);}
+.alloc-total{text-align:right;margin-top:12px;padding-top:12px;border-top:2px solid var(--border);font-weight:700;font-size:18px;}
+.alloc-total.ok{color:var(--green);}
+.alloc-total.ng{color:var(--red);}
+
+/* 子供 */
+.child-item{background:#fff;border:2px solid var(--border);border-radius:12px;padding:18px;margin-bottom:12px;}
+.child-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.child-title{font-weight:700;font-size:15px;}
+.del-btn{background:var(--red);color:#fff;border:none;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;}
+.add-child-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--green);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;}
+.add-child-btn:active{transform:scale(.97);}
+
+/* おまかせ・ボタン */
+.auto-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:linear-gradient(135deg,var(--secondary),var(--accent));color:#fff;border:none;border-radius:10px;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;transition:all .2s;margin-bottom:16px;}
+.auto-btn:active{transform:scale(.97);}
+.btn-group{display:flex;gap:12px;justify-content:flex-end;margin-top:28px;padding-top:20px;border-top:2px solid var(--border);}
+.btn{padding:13px 28px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;}
+.btn-sec{background:var(--border);color:var(--muted);}
+.btn-sec:active{background:#d1d5db;}
+.btn-pri{background:linear-gradient(135deg,var(--accent),var(--secondary));color:#fff;box-shadow:0 4px 15px rgba(37,99,235,.3);}
+.btn-pri:active{transform:scale(.97);}
+.btn-pri:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+/* 結果 */
+.result-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:28px;}
+.result-card{padding:20px;border-radius:16px;color:#fff;}
+.result-card.blue{background:linear-gradient(135deg,var(--accent),#1d4ed8);}
+.result-card.green{background:linear-gradient(135deg,var(--green),#059669);}
+.result-card.gold{background:linear-gradient(135deg,var(--gold),#d97706);}
+.rc-label{font-size:12px;opacity:.9;margin-bottom:6px;}
+.rc-value{font-family:'Outfit',sans-serif;font-size:30px;font-weight:800;}
+.rc-unit{font-size:15px;opacity:.9;margin-left:4px;}
+
+.chart-wrap{background:#fff;padding:24px;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,.05);margin-bottom:20px;}
+.chart-title{font-size:18px;font-weight:700;margin-bottom:16px;}
+.chart-wrap canvas{max-width:100%;height:280px!important;}
+/* ライフイベント表 */
+#lifeEventTable{font-size:12px;background:#fff;}
+#lifeEventTable th{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:10px 8px;text-align:left;font-weight:700;font-size:11px;white-space:nowrap;position:sticky;top:0;z-index:1;}
+#lifeEventTable td{padding:8px;border-bottom:1px solid var(--border);vertical-align:top;}
+#lifeEventTable tr:nth-child(even) td{background:#f8faff;}
+#lifeEventTable tr:hover td{background:#eff6ff;}
+#lifeEventTable .td-num{text-align:right;font-family:'Outfit',sans-serif;font-weight:600;}
+#lifeEventTable .td-good{color:#059669;}
+#lifeEventTable .td-warn{color:#dc2626;}
+
+
+/* 結果のQ&Aバナー */
+.qa-suggest{
+  background:linear-gradient(135deg,var(--navy),#1d4ed8);
+  border-radius:16px;padding:20px;color:#fff;margin-bottom:20px;
+  cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;
+}
+.qa-suggest:active{transform:scale(.98);}
+.qa-suggest-title{font-family:'Outfit',sans-serif;font-size:18px;font-weight:800;margin-bottom:8px;}
+.qa-suggest-text{font-size:13px;opacity:.9;line-height:1.6;margin-bottom:14px;}
+.qa-suggest-btn{background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.4);color:#fff;padding:10px 20px;border-radius:10px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;}
+
+/* ===== Q&A画面 ===== */
+.qa-hdr{flex-shrink:0;min-height:60px;background:linear-gradient(135deg,var(--navy),#1d4ed8);color:#fff;padding:max(env(safe-area-inset-top),14px) 18px 14px;}
+.qa-hdr-row{display:flex;align-items:center;justify-content:space-between;}
+.qa-hdr h1{font-family:'Outfit',sans-serif;font-size:19px;font-weight:800;}
+.qa-hdr-sub{font-size:11px;opacity:.8;margin-top:2px;}
+.key-btn{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.4);color:#fff;border-radius:10px;padding:8px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;}
+
+.quick-wrap{flex-shrink:0;min-height:48px;background:var(--navy);padding:10px 14px;}
+.quick-scroll{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.quick-scroll::-webkit-scrollbar{display:none;}
+.qtag{flex-shrink:0;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:rgba(255,255,255,.9);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.qtag:active{background:rgba(255,255,255,.25);}
+
+.chat-area{flex:1;min-height:0;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch;background:#f0f4ff;}
+.msg{margin-bottom:14px;display:flex;gap:10px;align-items:flex-start;}
+.msg.user{flex-direction:row-reverse;}
+.msg-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.msg.ai .msg-avatar{background:linear-gradient(135deg,var(--navy),var(--blue));}
+.msg.user .msg-avatar{background:linear-gradient(135deg,#7c3aed,#a855f7);}
+.msg-body{flex:1;max-width:86%;}
+.msg.user .msg-body{display:flex;flex-direction:column;align-items:flex-end;}
+
+.bubble{padding:12px 15px;border-radius:18px;font-size:14px;line-height:1.85;word-break:break-word;}
+.msg.ai .bubble{background:#fff;border:1.5px solid var(--border);border-top-left-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.msg.user .bubble{background:linear-gradient(135deg,var(--blue),#7c3aed);color:#fff;border-bottom-right-radius:4px;}
+.msg-time{font-size:10px;color:var(--muted);margin-top:4px;padding:0 3px;}
+.msg.user .msg-time{text-align:right;}
+.bubble h3{font-size:15px;font-weight:700;margin:10px 0 5px;color:var(--navy);}
+.bubble h3:first-child{margin-top:0;}
+.bubble ul,.bubble ol{padding-left:18px;margin:7px 0;}
+.bubble li{margin-bottom:4px;}
+.bubble p{margin-bottom:7px;}
+.bubble p:last-child{margin-bottom:0;}
+.bubble strong{font-weight:700;}
+.bubble .bx{background:#f0f9ff;border-left:4px solid var(--accent);padding:9px 12px;border-radius:0 10px 10px 0;margin:9px 0;font-size:13px;line-height:1.7;}
+.bubble .bx.w{background:#fffbeb;border-color:var(--gold);}
+.bubble .bx.g{background:#ecfdf5;border-color:var(--green);}
+.bubble .bx.r{background:#fff1f2;border-color:var(--red);}
+.bubble code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-family:monospace;font-size:13px;}
+.bubble .md-table-wrap{width:100%;overflow-x:auto;margin:14px 0;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.07);}
+.bubble .md-table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;}
+.bubble .md-table th{background:linear-gradient(135deg,var(--navy),#1d4ed8);color:#fff;padding:10px 14px;text-align:left;font-weight:700;font-size:12px;letter-spacing:.3px;white-space:nowrap;}
+.bubble .md-table th:first-child{border-radius:12px 0 0 0;}
+.bubble .md-table th:last-child{border-radius:0 12px 0 0;}
+.bubble .md-table td{padding:10px 14px;border-bottom:1px solid #e2e8f0;vertical-align:top;line-height:1.6;}
+.bubble .md-table tr:last-child td{border-bottom:none;}
+.bubble .md-table tr:nth-child(even) td{background:#f8faff;}
+.bubble .md-table tr:hover td{background:#eff6ff;transition:background .15s;}
+.bubble .md-table td:first-child{font-weight:600;color:var(--navy);}
+.bubble .md-table .td-num{text-align:right;font-family:'Outfit',sans-serif;font-weight:700;color:var(--accent);}
+.bubble .md-table .td-good{color:#059669;font-weight:700;}
+.bubble .md-table .td-warn{color:#d97706;font-weight:700;}
+
+.typing{display:flex;gap:5px;align-items:center;padding:6px 0;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 1.2s infinite;}
+.dot:nth-child(2){animation-delay:.2s;}
+.dot:nth-child(3){animation-delay:.4s;}
+@keyframes pulse{0%,100%{opacity:.3;transform:scale(.8);}50%{opacity:1;transform:scale(1.1);}}
+
+.welcome-chat{text-align:center;padding:28px 16px;background:#fff;border-radius:18px;border:1.5px solid var(--border);margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.welcome-chat .wi{font-size:40px;margin-bottom:10px;}
+.welcome-chat h2{font-family:'Outfit',sans-serif;font-size:18px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+.welcome-chat p{font-size:13px;color:var(--muted);line-height:1.7;}
+
+.qa-input-area{flex-shrink:0;min-height:70px;background:#fff;border-top:2px solid var(--border);padding:12px 14px max(env(safe-area-inset-bottom),12px);}
+.qa-input-row{display:flex;gap:10px;align-items:flex-end;}
+#qaMsgInput{flex:1;min-height:48px;max-height:110px;padding:13px 15px;font-size:16px;font-family:inherit;border:2px solid var(--border);border-radius:14px;outline:none;resize:none;color:var(--text);background:#fff;transition:border-color .2s;line-height:1.5;-webkit-appearance:none;}
+#qaMsgInput:focus{border-color:var(--accent);}
+#qaMsgInput::placeholder{color:#94a3b8;}
+.send-btn{width:48px;height:48px;flex-shrink:0;background:linear-gradient(135deg,var(--blue),#7c3aed);border:none;border-radius:14px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(29,78,216,.3);transition:all .2s;}
+.send-btn:active{transform:scale(.95);}
+.send-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+/* ===== 設定画面 ===== */
+.settings-content{padding:20px 16px;}
+.settings-section{margin-bottom:28px;}
+.settings-section-title{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:12px;padding:0 4px;text-transform:uppercase;letter-spacing:.5px;}
+.settings-card{background:#fff;border-radius:14px;border:1.5px solid var(--border);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .2s;}
+.settings-row:last-child{border-bottom:none;}
+.settings-row:active{background:var(--bg);}
+.settings-row-left{display:flex;align-items:center;gap:12px;}
+.settings-row-icon{font-size:22px;}
+.settings-row-label{font-size:15px;font-weight:600;}
+.settings-row-desc{font-size:12px;color:var(--muted);margin-top:2px;}
+.settings-row-right{font-size:20px;color:var(--muted);}
+.settings-status{font-size:12px;padding:4px 10px;border-radius:20px;font-weight:600;}
+.status-ok{background:#dcfce7;color:#166534;}
+.status-ng{background:#fee2e2;color:#991b1b;}
+
+.info-card{background:linear-gradient(135deg,var(--navy),#1d4ed8);border-radius:16px;padding:20px;color:#fff;margin-bottom:16px;}
+.info-card h3{font-family:'Outfit',sans-serif;font-size:18px;font-weight:800;margin-bottom:6px;}
+.info-card p{font-size:13px;opacity:.85;line-height:1.6;}
+.version-tag{background:rgba(255,255,255,.2);border-radius:20px;padding:3px 12px;font-size:12px;font-weight:600;margin-top:10px;display:inline-block;}
+
+/* ===== モーダル（APIキー） ===== */
+.modal-bg{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;padding:20px;}
+.modal-bg.show{display:flex;}
+.modal{background:#fff;border-radius:20px;padding:26px 22px;max-width:480px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.modal h2{font-family:'Outfit',sans-serif;font-size:20px;font-weight:800;color:var(--navy);margin-bottom:8px;}
+.modal-sub{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px;}
+.modal-input{width:100%;padding:14px 15px;border:2px solid var(--border);border-radius:12px;font-size:14px;font-family:inherit;outline:none;margin-bottom:12px;-webkit-appearance:none;}
+.modal-input:focus{border-color:var(--accent);}
+.modal-note{background:#fffbeb;border:1.5px solid var(--gold);border-radius:10px;padding:12px;font-size:12px;color:#78350f;line-height:1.7;margin-bottom:16px;}
+.modal-btns{display:flex;gap:10px;}
+.mbtn{flex:1;padding:13px;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;}
+.mbtn.cancel{background:var(--bg);color:var(--muted);}
+.mbtn.save{background:linear-gradient(135deg,var(--blue),#7c3aed);color:#fff;}
+
+/* Q&Aフロートボタン */
+
+
+@media(max-width:480px){
+  .result-cards{grid-template-columns:1fr;}
+  .btn-group{flex-direction:column;}
+  .btn{width:100%;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- ページ: ホーム -->
+<div class="page active" id="page-home">
+  <div class="scroll-area">
+    <div class="home-content">
+      <!-- ヒーロー -->
+      <div class="home-hero">
+        <div class="hero-label">DC PRO</div>
+        <div class="hero-title">💼 確定拠出年金<br>総合サポート</div>
+        <div class="hero-sub">ライフプランシミュレーション＋<br>AI専門アドバイザーが一体化</div>
+        <div class="hero-btns">
+          <button class="hero-btn primary" onclick="showPage('sim')">📊 シミュレーター</button>
+          <button class="hero-btn secondary" onclick="showPage('qa')">💬 Q&A相談</button>
+        </div>
+      </div>
+
+      <!-- 2025年改正バナー -->
+      <div class="reform-banner" onclick="showPage('qa')">
+        <div class="banner-icon">⚡</div>
+        <div>
+          <div class="banner-title">【2025年改正 速報】掛金上限が大幅UP！</div>
+          <div class="banner-text">会社員：月2.3万→6.2万円（2027年1月〜）<br>Q&Aタブから詳しく質問できます →</div>
+        </div>
+      </div>
+
+      <!-- 機能カード -->
+      <div class="home-cards">
+        <div class="home-card" onclick="showPage('sim')">
+          <div class="card-icon">📊</div>
+          <div class="card-title">ライフプラン</div>
+          <div class="card-desc">DC資産・キャッシュフローを90歳まで可視化</div>
+        </div>
+        <div class="home-card" onclick="showPage('qa')">
+          <div class="card-icon">🤖</div>
+          <div class="card-title">AI Q&A</div>
+          <div class="card-desc">専門家が回答</div>
+        </div>
+        <div class="home-card" onclick="showPage('qa')">
+          <div class="card-icon">💴</div>
+          <div class="card-title">節税計算</div>
+          <div class="card-desc">2027年〜最大年22万円以上の節税効果</div>
+        </div>
+        <div class="home-card" onclick="showPage('qa')">
+          <div class="card-icon">🎯</div>
+          <div class="card-title">受取戦略</div>
+          <div class="card-desc">退職所得控除・10年ルールを踏まえた最適解</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ページ: シミュレーター -->
+<div class="page" id="page-sim">
+  <div class="sim-hdr page-hdr">
+    <h1>💼 ライフプランシミュレーター</h1>
+    <p>DC運用と連携した人生設計をサポート</p>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-steps">
+      <div class="prog-line"><div class="prog-line-fill" id="progFill" style="width:0%"></div></div>
+      <div class="prog-step active" data-step="1"><div class="step-circle">1</div><div class="step-lbl">基本</div></div>
+      <div class="prog-step" data-step="2"><div class="step-circle">2</div><div class="step-lbl">DC運用</div></div>
+      <div class="prog-step" data-step="3"><div class="step-circle">3</div><div class="step-lbl">家族</div></div>
+      <div class="prog-step" data-step="4"><div class="step-circle">4</div><div class="step-lbl">支出</div></div>
+      <div class="prog-step" data-step="5"><div class="step-circle">5</div><div class="step-lbl">年金</div></div>
+      <div class="prog-step" data-step="6"><div class="step-circle">6</div><div class="step-lbl">結果</div></div>
+    </div>
+  </div>
+  <div class="sim-scroll" id="simScroll">
+    <!-- ステップ1 -->
+    <div class="step-content active" data-step="1">
+      <div class="step-title">基本情報</div>
+      <div class="step-desc">現在の状況を教えてください</div>
+      <button class="auto-btn" onclick="autoFillBasic()">✨ おまかせ入力</button>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">現在の年齢 <span class="tip-icon" onclick="toggleTip(this,'満年齢を入力してください')">?</span></label>
+          <div class="tooltip-box"></div>
+          <input type="number" class="form-input" id="currentAge" min="20" max="70" value="35">
+        </div>
+        <div class="form-group">
+          <label class="form-label">年収（税込）<span class="tip-icon" onclick="toggleTip(this,'源泉徴収票の「支払金額」を入力')">?</span></label>
+          <div class="tooltip-box"></div>
+          <input type="number" class="form-input" id="annualIncome" min="0" step="10000" value="5000000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">現在の貯蓄額 <span class="tip-icon" onclick="toggleTip(this,'預貯金・株式・投信など金融資産の合計')">?</span></label>
+          <div class="tooltip-box"></div>
+          <input type="number" class="form-input" id="currentSavings" min="0" step="10000" value="3000000">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">婚姻状況</label>
+        <div class="radio-group">
+          <div class="radio-opt"><input type="radio" name="marital" id="single" value="single"><label for="single" class="radio-lbl">未婚</label></div>
+          <div class="radio-opt"><input type="radio" name="marital" id="married" value="married" checked><label for="married" class="radio-lbl">既婚</label></div>
+        </div>
+      </div>
+      <div class="form-group" id="spouseGroup">
+        <label class="form-label">配偶者の年収（税込）</label>
+        <input type="number" class="form-input" id="spouseIncome" min="0" step="10000" value="3000000">
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-pri" onclick="simNext()">次へ →</button>
+      </div>
+    </div>
+
+    <!-- ステップ2 -->
+    <div class="step-content" data-step="2">
+      <div class="step-title">DC運用設定</div>
+      <div class="step-desc">確定拠出年金の運用方針を設定してください</div>
+      <button class="auto-btn" onclick="autoFillDC()">✨ 年齢に応じた配分</button>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">毎月の掛金 <span class="tip-icon" onclick="toggleTip(this,'企業型DCは会社からの掛金。iDeCoはあなたの拠出額。2027年〜会社員最大6.2万円に拡大予定')">?</span></label>
+          <div class="tooltip-box"></div>
+          <input type="number" class="form-input" id="monthlyContrib" min="0" step="1000" value="23000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">DC目標額 <span class="tip-icon" onclick="toggleTip(this,'退職時点でのDC資産の目標額')">?</span></label>
+          <div class="tooltip-box"></div>
+          <input type="number" class="form-input" id="dcTarget" min="0" step="100000" value="20000000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">現在のDC資産額</label>
+          <input type="number" class="form-input" id="currentDC" min="0" step="10000" value="1000000">
+        </div>
+      </div>
+      <div class="alloc-box">
+        <h3 style="margin-bottom:6px;font-size:16px;font-weight:700;">資産配分設定</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:18px;">合計100%になるよう設定してください</p>
+        <div class="alloc-item">
+          <div class="alloc-hdr"><span class="alloc-name">🇯🇵 国内株式 <small style="color:var(--muted);font-size:11px;">4.5%/年</small></span><span class="alloc-val"><span id="v_ds">20</span>%</span></div>
+          <input type="range" class="alloc-slider" id="s_ds" min="0" max="100" value="20" step="5" oninput="updateAlloc()">
+        </div>
+        <div class="alloc-item">
+          <div class="alloc-hdr"><span class="alloc-name">🌍 外国株式 <small style="color:var(--muted);font-size:11px;">7.0%/年</small></span><span class="alloc-val"><span id="v_fs">40</span>%</span></div>
+          <input type="range" class="alloc-slider" id="s_fs" min="0" max="100" value="40" step="5" oninput="updateAlloc()">
+        </div>
+        <div class="alloc-item">
+          <div class="alloc-hdr"><span class="alloc-name">🏦 国内債券 <small style="color:var(--muted);font-size:11px;">1.5%/年</small></span><span class="alloc-val"><span id="v_db">10</span>%</span></div>
+          <input type="range" class="alloc-slider" id="s_db" min="0" max="100" value="10" step="5" oninput="updateAlloc()">
+        </div>
+        <div class="alloc-item">
+          <div class="alloc-hdr"><span class="alloc-name">🌏 外国債券 <small style="color:var(--muted);font-size:11px;">3.0%/年</small></span><span class="alloc-val"><span id="v_fb">15</span>%</span></div>
+          <input type="range" class="alloc-slider" id="s_fb" min="0" max="100" value="15" step="5" oninput="updateAlloc()">
+        </div>
+        <div class="alloc-item">
+          <div class="alloc-hdr"><span class="alloc-name">🏢 REIT <small style="color:var(--muted);font-size:11px;">4.0%/年</small></span><span class="alloc-val"><span id="v_re">5</span>%</span></div>
+          <input type="range" class="alloc-slider" id="s_re" min="0" max="100" value="5" step="5" oninput="updateAlloc()">
+        </div>
+        <div class="alloc-item">
+          <div class="alloc-hdr"><span class="alloc-name">📅 ターゲットイヤー <small style="color:var(--muted);font-size:11px;" id="tyReturn">5.5%/年</small></span><span class="alloc-val"><span id="v_ty">10</span>%</span></div>
+          <input type="range" class="alloc-slider" id="s_ty" min="0" max="100" value="10" step="5" oninput="updateAlloc()">
+        </div>
+        <div class="alloc-total ok" id="allocTotal">合計: <span id="allocPct">100</span>%</div>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-sec" onclick="simPrev()">← 戻る</button>
+        <button class="btn btn-pri" id="dcNextBtn" onclick="simNext()">次へ →</button>
+      </div>
+    </div>
+
+    <!-- ステップ3 -->
+    <div class="step-content" data-step="3">
+      <div class="step-title">家族・教育計画</div>
+      <div class="step-desc">お子様の情報と教育方針を設定してください</div>
+      <div id="childrenList"></div>
+      <button class="add-child-btn" onclick="addChild()">➕ 子供を追加</button>
+      <div class="btn-group">
+        <button class="btn btn-sec" onclick="simPrev()">← 戻る</button>
+        <button class="btn btn-pri" onclick="simNext()">次へ →</button>
+      </div>
+    </div>
+
+    <!-- ステップ4 -->
+    <div class="step-content" data-step="4">
+      <div class="step-title">支出計画</div>
+      <div class="step-desc">住宅・車・保険の支出計画を設定してください</div>
+      <button class="auto-btn" onclick="autoFillExpenses()">✨ おまかせ入力</button>
+
+      <h3 style="margin-bottom:14px;font-size:17px;">🏠 住宅</h3>
+      <div class="form-group">
+        <label class="form-label">住宅の状況</label>
+        <div class="radio-group">
+          <div class="radio-opt"><input type="radio" name="housing" id="renting" value="renting" checked><label for="renting" class="radio-lbl">賃貸</label></div>
+          <div class="radio-opt"><input type="radio" name="housing" id="owned" value="owned"><label for="owned" class="radio-lbl">持ち家</label></div>
+          <div class="radio-opt"><input type="radio" name="housing" id="planning" value="planning"><label for="planning" class="radio-lbl">購入予定</label></div>
+        </div>
+      </div>
+      <div class="form-grid" id="rentGroup">
+        <div class="form-group"><label class="form-label">月額賃料</label><input type="number" class="form-input" id="monthlyRent" value="100000" step="1000"></div>
+      </div>
+      <div class="form-grid" id="purchaseGroup" style="display:none">
+        <div class="form-group"><label class="form-label">購入予算</label><input type="number" class="form-input" id="purchasePrice" value="40000000" step="100000"></div>
+        <div class="form-group"><label class="form-label">頭金</label><input type="number" class="form-input" id="downPayment" value="5000000" step="100000"></div>
+        <div class="form-group"><label class="form-label">購入予定年齢</label><input type="number" class="form-input" id="purchaseAge" value="40" min="20" max="70"></div>
+      </div>
+
+      <h3 style="margin:24px 0 14px;font-size:17px;">🚗 自動車</h3>
+      <div class="form-group">
+        <label class="form-label">車の所有</label>
+        <div class="radio-group">
+          <div class="radio-opt"><input type="radio" name="car" id="carNo" value="no"><label for="carNo" class="radio-lbl">所有しない</label></div>
+          <div class="radio-opt"><input type="radio" name="car" id="carYes" value="yes" checked><label for="carYes" class="radio-lbl">所有する</label></div>
+        </div>
+      </div>
+      <div class="form-grid" id="carGroup">
+        <div class="form-group"><label class="form-label">車検代（2年ごと）</label><input type="number" class="form-input" id="carInspect" value="100000" step="10000"></div>
+        <div class="form-group"><label class="form-label">買替周期（年）</label><input type="number" class="form-input" id="carCycle" value="8" min="1" max="20"></div>
+        <div class="form-group"><label class="form-label">買替予算</label><input type="number" class="form-input" id="carCost" value="2000000" step="100000"></div>
+      </div>
+
+      <h3 style="margin:24px 0 14px;font-size:17px;">🛡️ 保険</h3>
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">生命保険（年額）</label><input type="number" class="form-input" id="lifeIns" value="240000" step="10000"></div>
+        <div class="form-group"><label class="form-label">医療・介護保険（年額）</label><input type="number" class="form-input" id="medIns" value="120000" step="10000"></div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-sec" onclick="simPrev()">← 戻る</button>
+        <button class="btn btn-pri" onclick="simNext()">次へ →</button>
+      </div>
+    </div>
+
+    <!-- ステップ5 -->
+    <div class="step-content" data-step="5">
+      <div class="step-title">就労・年金計画</div>
+      <div class="step-desc">退職金・年金の見込みを設定してください</div>
+      <button class="auto-btn" onclick="autoFillRetirement()">✨ おまかせ入力</button>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">退職予定年齢 <span class="tip-icon" onclick="toggleTip(this,'会社を退職する年齢')">?</span></label>
+          <div class="tooltip-box"></div>
+          <input type="number" class="form-input" id="retireAge" min="50" max="75" value="65">
+        </div>
+        <div class="form-group">
+          <label class="form-label">就労終了年齢 <span class="tip-icon" onclick="toggleTip(this,'完全にリタイアする年齢')">?</span></label>
+          <div class="tooltip-box"></div>
+          <input type="number" class="form-input" id="workEndAge" min="50" max="80" value="70">
+        </div>
+      </div>
+
+      <h3 style="margin-bottom:14px;font-size:17px;">💰 退職金</h3>
+      <div class="form-group">
+        <label class="form-label">退職金の状況</label>
+        <div class="radio-group">
+          <div class="radio-opt"><input type="radio" name="severance" id="sevNone" value="none"><label for="sevNone" class="radio-lbl">制度なし</label></div>
+          <div class="radio-opt"><input type="radio" name="severance" id="sevKnown" value="known" checked><label for="sevKnown" class="radio-lbl">金額を入力</label></div>
+          <div class="radio-opt"><input type="radio" name="severance" id="sevUnknown" value="unknown"><label for="sevUnknown" class="radio-lbl">平均値を使用</label></div>
+        </div>
+      </div>
+      <div class="form-group" id="sevAmtGroup">
+        <label class="form-label">退職金見込額 <span class="tip-icon" onclick="toggleTip(this,'退職金規定から計算した見込額')">?</span></label>
+        <div class="tooltip-box"></div>
+        <input type="number" class="form-input" id="severanceAmt" value="15000000" step="100000">
+      </div>
+
+      <h3 style="margin:24px 0 14px;font-size:17px;">👴 再雇用・年金</h3>
+      <div class="form-group">
+        <label class="form-label">退職後の収入</label>
+        <div class="radio-group">
+          <div class="radio-opt"><input type="radio" name="postRetire" id="noPostIncome" value="none"><label for="noPostIncome" class="radio-lbl">収入なし</label></div>
+          <div class="radio-opt"><input type="radio" name="postRetire" id="reemploy" value="reemploy" checked><label for="reemploy" class="radio-lbl">再雇用・継続就労</label></div>
+        </div>
+      </div>
+      <div class="form-group" id="reemployGroup">
+        <label class="form-label">再雇用後の年収</label>
+        <input type="number" class="form-input" id="reemployIncome" value="3000000" step="100000">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">公的年金見込額（年額）<span class="tip-icon" onclick="toggleTip(this,'ねんきん定期便を確認してください')">?</span></label>
+        <div class="tooltip-box"></div>
+        <input type="number" class="form-input" id="pensionAmt" value="2000000" step="10000">
+      </div>
+      <div class="form-group">
+        <label class="form-label">配偶者の年金見込額（年額）</label>
+        <input type="number" class="form-input" id="spousePension" value="800000" step="10000">
+      </div>
+
+      <h3 style="margin:24px 0 14px;font-size:17px;">💼 DC資産の受取方法</h3>
+      <div class="form-group">
+        <label class="form-label">DC受取方法 <span class="tip-icon" onclick="toggleTip(this,'一時金：退職時に一括受取。年金：分割して受取。併給：一部を一時金、残りを年金で受取')">?</span></label>
+        <div class="tooltip-box"></div>
+        <div class="radio-group">
+          <div class="radio-opt"><input type="radio" name="dcReceive" id="dcLump" value="lump" checked><label for="dcLump" class="radio-lbl">一時金（一括）</label></div>
+          <div class="radio-opt"><input type="radio" name="dcReceive" id="dcAnnuity" value="annuity"><label for="dcAnnuity" class="radio-lbl">年金（分割）</label></div>
+          <div class="radio-opt"><input type="radio" name="dcReceive" id="dcMixed" value="mixed"><label for="dcMixed" class="radio-lbl">併給</label></div>
+        </div>
+      </div>
+      <div class="form-group" id="dcAnnuityGroup" style="display:none">
+        <label class="form-label">年金受取期間（年）</label>
+        <select class="form-select" id="dcAnnuityYears">
+          <option value="5">5年</option>
+          <option value="10" selected>10年</option>
+          <option value="15">15年</option>
+          <option value="20">20年</option>
+        </select>
+      </div>
+      <div class="form-group" id="dcMixedGroup" style="display:none">
+        <label class="form-label">一時金で受け取る割合（%）</label>
+        <input type="number" class="form-input" id="dcMixedPct" min="10" max="90" step="10" value="50">
+      </div>
+
+      <h3 style="margin:24px 0 14px;font-size:17px;">🏥 老後の医療・介護費</h3>
+      <div class="form-group">
+        <label class="form-label">65歳以降の年間医療・介護費 <span class="tip-icon" onclick="toggleTip(this,'一般的には年間50〜100万円が目安')">?</span></label>
+        <div class="tooltip-box"></div>
+        <div class="radio-group" style="margin-bottom:10px;">
+          <div class="radio-opt"><input type="radio" name="elderCare" id="ecAvg" value="avg" checked><label for="ecAvg" class="radio-lbl">平均値(50万円)</label></div>
+          <div class="radio-opt"><input type="radio" name="elderCare" id="ecCustom" value="custom"><label for="ecCustom" class="radio-lbl">カスタム入力</label></div>
+        </div>
+        <input type="number" class="form-input" id="elderCareAmt" value="500000" step="10000" style="display:none">
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-sec" onclick="simPrev()">← 戻る</button>
+        <button class="btn btn-pri" onclick="runSim()">🚀 シミュレーション実行</button>
+      </div>
+    </div>
+
+    <!-- ステップ6: 結果 -->
+    <div class="step-content" data-step="6">
+      <div class="step-title">シミュレーション結果</div>
+      <div class="step-desc">あなたのライフプランをグラフと数値で確認できます</div>
+
+      <div class="result-cards">
+        <div class="result-card blue"><div class="rc-label">DC最終資産額</div><div class="rc-value"><span id="rc_dc">0</span><span class="rc-unit">万円</span></div></div>
+        <div class="result-card green"><div class="rc-label">退職時の総資産</div><div class="rc-value"><span id="rc_ret">0</span><span class="rc-unit">万円</span></div></div>
+        <div class="result-card gold"><div class="rc-label">90歳時点の資産</div><div class="rc-value"><span id="rc_90">0</span><span class="rc-unit">万円</span></div></div>
+      </div>
+
+      <div class="chart-wrap"><div class="chart-title">📈 資産推移</div><canvas id="assetsChart"></canvas></div>
+      <div class="chart-wrap"><div class="chart-title">💰 キャッシュフロー</div><canvas id="cashChart"></canvas></div>
+      <div class="chart-wrap"><div class="chart-title">🎯 DC資産の成長</div><canvas id="dcChart"></canvas></div>
+
+      <!-- ライフイベント表 -->
+      <div class="chart-wrap">
+        <div class="chart-title">📅 年次キャッシュフロー・ライフイベント表</div>
+        <div style="overflow-x:auto;">
+          <table id="lifeEventTable" style="width:100%;border-collapse:collapse;font-size:13px;"></table>
+        </div>
+      </div>
+
+      <!-- Q&Aへの誘導 -->
+      <div style="margin-top:20px;">
+        <button onclick="goToQAFromResult()" style="width:100%;padding:16px;background:linear-gradient(135deg,var(--navy),#1d4ed8);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:.3px;">🤖 この結果をAI専門家に相談する →</button>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:12px;">
+        <button onclick="simPrev()" style="flex:1;padding:13px;background:#f1f5f9;color:var(--text);border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">← 条件を修正する</button>
+        <button onclick="resetSim();updateProgBar();" style="flex:1;padding:13px;background:#fff;color:var(--muted);border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">🔄 最初からやり直す</button>
+      </div>
+  </div><!-- /step-content[6] -->
+  </div><!-- /sim-scroll -->
+</div><!-- /page-sim -->
+
+<!-- ページ: Q&A -->
+<div class="page" id="page-qa">
+  <div class="qa-hdr">
+    <div class="qa-hdr-row">
+      <div>
+        <h1>DC Pro Q&A <span class="badge">2025年改正対応</span></h1>
+        <div class="qa-hdr-sub">専門家回答</div>
+      </div>
+      
+      <button class="key-btn" onclick="resetChat()" style="margin-left:8px;background:rgba(255,255,255,.15);">🔄 リセット</button>
+    </div>
+  </div>
+  <div class="quick-wrap">
+    <div class="quick-scroll" id="quickTags">
+      <button class="qtag" onclick="quickAsk('2025年改正でiDeCoの掛金上限はどう変わりますか？')">🆕 2025年改正</button>
+      <button class="qtag" onclick="quickAsk('5年ルールが10年ルールに変わるとはどういう意味ですか？')">10年ルール</button>
+      <button class="qtag" onclick="quickAsk('年収600万円の会社員がiDeCoで得られる節税効果を具体的な金額で教えてください')">節税計算</button>
+      <button class="qtag" onclick="quickAsk('オルカンとS&P500、DCで選ぶならどちらがいいですか？')">オルカンvsS&P500</button>
+      <button class="qtag" onclick="quickAsk('リバランスのタイミングと具体的な方法を教えてください')">リバランス</button>
+      <button class="qtag" onclick="quickAsk('DCの受取方法（一時金・年金）どちらが税制上有利ですか？')">受取戦略</button>
+      <button class="qtag" onclick="quickAsk('退職所得控除の計算方法を勤続35年の具体例で教えてください')">退職所得控除</button>
+      <button class="qtag" onclick="quickAsk('マッチング拠出と2026年4月の制度変更を詳しく教えてください')">マッチング拠出</button>
+      <button class="qtag" onclick="quickAsk('転職時のDCの手続きと放置した場合のリスクを教えてください')">転職手続き</button>
+      <button class="qtag" onclick="quickAsk('相場が暴落したときDCはどうすべきですか？')">暴落対応</button>
+    </div>
+  </div>
+  <div class="chat-area" id="chatArea">
+    <div class="welcome-chat" id="welcomeChat">
+      <div class="wi">🤖</div>
+      <h2>DC専門AIアドバイザー</h2>
+      <p>DC専門家レベルで回答します。<br>初歩的な質問から高度な専門的質問まで、<br>2025年最新改正にも完全対応しています。</p>
+    </div>
+  </div>
+  <div class="qa-input-area">
+    <div class="qa-input-row">
+      <textarea id="qaMsgInput" rows="1"
+        placeholder="何でも自由に質問してください"
+        oninput="autoResizeQA(this)"
+        onkeydown="handleQAKey(event)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMsg()" disabled>✈️</button>
+    </div>
+  </div>
+</div>
+
+<!-- ページ: 設定 -->
+<div class="page" id="page-settings">
+  <div class="page-hdr">
+    <h1>⚙️ 設定</h1>
+    <p>DC Pro の設定を管理します</p>
+  </div>
+  <div class="scroll-area">
+    <div class="settings-content">
+      <div class="info-card">
+        <h3>DC Pro</h3>
+        <p>ライフプランシミュレーター＋AI Q&Aアドバイザーが一体化した確定拠出年金専門アプリ。<br>DC専門家レベルの回答で資産形成をサポートします。</p>
+        <div class="version-tag">Version 2.0 - 2025年改正対応</div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">AI Q&A 設定</div>
+        <div class="settings-card">
+          <div class="settings-row">
+            <div class="settings-row-left">
+              <div class="settings-row-icon">🤖</div>
+              <div>
+                <div class="settings-row-label">AI アドバイザー</div>
+                <div class="settings-row-desc">Claude AI (GAS経由) で確定拠出年金をアドバイス</div>
+              </div>
+            </div>
+            <div class="settings-row-right">
+              <span class="settings-status status-ok">有効</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">シミュレーター</div>
+        <div class="settings-card">
+          <div class="settings-row" onclick="resetSim();showPage('sim')">
+            <div class="settings-row-left">
+              <div class="settings-row-icon">🔄</div>
+              <div>
+                <div class="settings-row-label">シミュレーションをリセット</div>
+                <div class="settings-row-desc">入力内容をすべてリセットして最初から</div>
+              </div>
+            </div>
+            <div class="settings-row-right">›</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">2025年最新改正情報</div>
+        <div class="settings-card">
+          <div class="settings-row" onclick="quickAsk('2025年のiDeCo・DC改正内容を全部教えてください');showPage('qa')">
+            <div class="settings-row-left">
+              <div class="settings-row-icon">⚡</div>
+              <div>
+                <div class="settings-row-label">2025年年金制度改正法</div>
+                <div class="settings-row-desc">掛金上限UP・10年ルール・マッチング拠出変更</div>
+              </div>
+            </div>
+            <div class="settings-row-right">›</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ボトムナビ -->
+<nav class="bottom-nav">
+  <div class="nav-item active" id="nav-home" onclick="showPage('home')">
+    <div class="nav-icon">🏠</div>
+    <div class="nav-label">ホーム</div>
+    <div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" id="nav-sim" onclick="showPage('sim')">
+    <div class="nav-icon">📊</div>
+    <div class="nav-label">シミュレーター</div>
+    <div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" id="nav-qa" onclick="showPage('qa')" style="position:relative;">
+    <div class="nav-icon">💬<span id="qaBadge" style="display:none;position:absolute;top:6px;right:calc(50% - 18px);width:9px;height:9px;background:var(--red);border-radius:50%;border:2px solid #fff;"></span></div>
+    <div class="nav-label">Q&A</div>
+    <div class="nav-dot"></div>
+  </div>
+  <div class="nav-item" id="nav-settings" onclick="showPage('settings')">
+    <div class="nav-icon">⚙️</div>
+    <div class="nav-label">設定</div>
+    <div class="nav-dot"></div>
+  </div>
+</nav>
+
+
+
+
+<script>
+// ===== ナビゲーション =====
+let currentPage = 'home';
+function showPage(page) {
+  try {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.add('active');
+  const nav = document.getElementById('nav-' + page);
+  if (nav) nav.classList.add('active');
+  currentPage = page;
+  // フロートボタン廃止
+  // シミュレーター：上にスクロール
+  if (page === 'sim') document.getElementById('simScroll').scrollTop = 0;
+  // Q&A：最下部にスクロール（履歴を見せる）
+  if (page === 'qa') {
+    const area = document.getElementById('chatArea');
+    // 複数タイミングでスクロール（Safariのレイアウト確定を待つ）
+    setTimeout(() => { try { area.scrollTop = area.scrollHeight; } catch(e){} }, 50);
+    setTimeout(() => { try { area.scrollTop = area.scrollHeight; } catch(e){} }, 200);
+    // バッジをクリア
+    const badge = document.getElementById('qaBadge');
+    if (badge) badge.style.display = 'none';
+    // チャット履歴があれば welcomeChat を隠す
+    if (chatMsgs && chatMsgs.length > 0) {
+      const wc = document.getElementById('welcomeChat');
+      if (wc) wc.style.display = 'none';
+    }
+  }
+  } catch(e) { console.error("showPage error:", e); }
+}
+
+// ===== ツールチップ =====
+function toggleTip(el, text) {
+  const box = el.parentElement.nextElementSibling;
+  if (!box || !box.classList.contains('tooltip-box')) return;
+  const isShow = box.classList.contains('show');
+  document.querySelectorAll('.tooltip-box.show').forEach(b => { b.classList.remove('show'); b.previousElementSibling?.querySelectorAll('.tip-icon').forEach(i => i.classList.remove('active')); });
+  document.querySelectorAll('.tip-icon.active').forEach(i => i.classList.remove('active'));
+  if (!isShow) {
+    box.textContent = text;
+    box.classList.add('show');
+    el.classList.add('active');
+  }
+}
+document.addEventListener('click', e => {
+  if (!e.target.classList.contains('tip-icon')) {
+    document.querySelectorAll('.tooltip-box.show').forEach(b => b.classList.remove('show'));
+    document.querySelectorAll('.tip-icon.active').forEach(i => i.classList.remove('active'));
+  }
+});
+
+// ===== シミュレーター =====
+let simStep = 1;
+let childCount = 0;
+let simResult = null;
+
+function updateProgBar() {
+  document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
+  document.querySelector(`.step-content[data-step="${simStep}"]`).classList.add('active');
+  document.querySelectorAll('.prog-step').forEach(s => {
+    const n = parseInt(s.dataset.step);
+    s.classList.remove('active', 'done');
+    if (n === simStep) s.classList.add('active');
+    else if (n < simStep) s.classList.add('done');
+  });
+  const pct = ((simStep - 1) / 5) * 100;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('simScroll').scrollTop = 0;
+}
+
+function simNext() { if (simStep < 6) { simStep++; updateProgBar(); } }
+function simPrev() { if (simStep > 1) { simStep--; updateProgBar(); } }
+
+// 配分更新
+function updateAlloc() {
+  const ids = ['ds','fs','db','fb','re','ty'];
+  let total = 0;
+  ids.forEach(id => {
+    const v = parseInt(document.getElementById('s_'+id).value);
+    document.getElementById('v_'+id).textContent = v;
+    total += v;
+  });
+  const el = document.getElementById('allocTotal');
+  document.getElementById('allocPct').textContent = total;
+  el.className = 'alloc-total ' + (total === 100 ? 'ok' : 'ng');
+  document.getElementById('dcNextBtn').disabled = total !== 100;
+  // ターゲットイヤー利回り
+  const age = parseInt(document.getElementById('currentAge').value) || 35;
+  const yrs = 65 - age;
+  const r = yrs > 25 ? 6.0 : yrs > 15 ? 5.5 : yrs > 10 ? 4.5 : yrs > 5 ? 3.5 : 2.5;
+  document.getElementById('tyReturn').textContent = r + '%/年';
+}
+
+// 婚姻状況
+document.querySelectorAll('input[name="marital"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('spouseGroup').style.display = r.value === 'married' ? 'block' : 'none';
+  });
+});
+
+// 住宅
+document.querySelectorAll('input[name="housing"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('rentGroup').style.display = r.value === 'renting' ? 'grid' : 'none';
+    document.getElementById('purchaseGroup').style.display = r.value === 'planning' ? 'grid' : 'none';
+  });
+});
+
+// 車
+document.querySelectorAll('input[name="car"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('carGroup').style.display = r.value === 'yes' ? 'grid' : 'none';
+  });
+});
+
+// 退職金
+document.querySelectorAll('input[name="severance"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('sevAmtGroup').style.display = r.value === 'known' ? 'block' : 'none';
+  });
+});
+
+// 再雇用
+document.querySelectorAll('input[name="postRetire"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('reemployGroup').style.display = r.value === 'reemploy' ? 'block' : 'none';
+  });
+});
+
+// 介護
+document.querySelectorAll('input[name="elderCare"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('elderCareAmt').style.display = r.value === 'custom' ? 'block' : 'none';
+  });
+});
+
+// DC受取方法
+document.querySelectorAll('input[name="dcReceive"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('dcAnnuityGroup').style.display = r.value === 'annuity' ? 'block' : 'none';
+    document.getElementById('dcMixedGroup').style.display = r.value === 'mixed' ? 'block' : 'none';
+  });
+});
+
+
+// 子供追加（onclickをaddEventListenerで安全に設定）
+function addChild() {
+  childCount++;
+  const n = childCount;
+  const div = document.createElement('div');
+  div.className = 'child-item';
+  div.id = 'child-' + n;
+  // innerHTML内にonclickは使わずDOM構築後にリスナー追加
+  div.innerHTML = `
+    <div class="child-hdr">
+      <div class="child-title">👶 子供 ${n}</div>
+      <button class="del-btn" id="delChild${n}" type="button">削除</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label">現在の年齢</label><input type="number" class="form-input" id="cAge${n}" min="0" max="25" value="5"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">小学〜高校</label>
+      <div class="radio-group">
+        <div class="radio-opt"><input type="radio" name="cSchool${n}" id="cSPub${n}" value="public" checked><label for="cSPub${n}" class="radio-lbl">公立</label></div>
+        <div class="radio-opt"><input type="radio" name="cSchool${n}" id="cSPri${n}" value="private"><label for="cSPri${n}" class="radio-lbl">私立</label></div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">大学</label>
+      <div class="radio-group">
+        <div class="radio-opt"><input type="radio" name="cUniv${n}" id="cUNo${n}" value="none"><label for="cUNo${n}" class="radio-lbl">進学なし</label></div>
+        <div class="radio-opt"><input type="radio" name="cUniv${n}" id="cUPub${n}" value="public" checked><label for="cUPub${n}" class="radio-lbl">国公立</label></div>
+        <div class="radio-opt"><input type="radio" name="cUniv${n}" id="cUPri${n}" value="private"><label for="cUPri${n}" class="radio-lbl">私立</label></div>
+      </div>
+    </div>`;
+  document.getElementById('childrenList').appendChild(div);
+  // 削除ボタンにイベントリスナーを後付け（CSP安全）
+  document.getElementById('delChild' + n).addEventListener('click', function() {
+    const el = document.getElementById('child-' + n);
+    if (el) el.remove();
+  });
+}
+
+// おまかせ入力
+function autoFillBasic() {
+  document.getElementById('currentAge').value = 35;
+  document.getElementById('annualIncome').value = 5000000;
+  document.getElementById('currentSavings').value = 3000000;
+  document.getElementById('married').checked = true;
+  document.getElementById('spouseIncome').value = 3000000;
+  document.getElementById('spouseGroup').style.display = 'block';
+}
+function autoFillDC() {
+  const age = parseInt(document.getElementById('currentAge').value) || 35;
+  if (age < 35) setAlloc(15,50,5,15,5,10);
+  else if (age < 45) setAlloc(20,40,10,15,5,10);
+  else if (age < 55) setAlloc(20,30,15,20,5,10);
+  else setAlloc(15,20,20,30,5,10);
+  updateAlloc();
+}
+function setAlloc(ds,fs,db,fb,re,ty) {
+  ['ds','fs','db','fb','re','ty'].forEach((id,i) => {
+    const val = [ds,fs,db,fb,re,ty][i];
+    document.getElementById('s_'+id).value = val;
+    document.getElementById('v_'+id).textContent = val;
+  });
+}
+function autoFillExpenses() {
+  document.getElementById('renting').checked = true;
+  document.getElementById('rentGroup').style.display = 'grid';
+  document.getElementById('purchaseGroup').style.display = 'none';
+  document.getElementById('monthlyRent').value = 100000;
+  document.getElementById('carYes').checked = true;
+  document.getElementById('carGroup').style.display = 'grid';
+  document.getElementById('carInspect').value = 100000;
+  document.getElementById('carCycle').value = 8;
+  document.getElementById('carCost').value = 2000000;
+  document.getElementById('lifeIns').value = 240000;
+  document.getElementById('medIns').value = 120000;
+}
+function autoFillRetirement() {
+  document.getElementById('retireAge').value = 65;
+  document.getElementById('workEndAge').value = 70;
+  document.getElementById('sevKnown').checked = true;
+  document.getElementById('sevAmtGroup').style.display = 'block';
+  document.getElementById('severanceAmt').value = 15000000;
+  document.getElementById('reemploy').checked = true;
+  document.getElementById('reemployGroup').style.display = 'block';
+  document.getElementById('reemployIncome').value = 3000000;
+  document.getElementById('pensionAmt').value = 2000000;
+  document.getElementById('spousePension').value = 800000;
+  document.getElementById('ecAvg').checked = true;
+  document.getElementById('elderCareAmt').style.display = 'none';
+}
+
+// シミュレーション実行
+function runSim() {
+  try {
+    const d = collectData();
+    simResult = simulate(d);
+    simStep = 6;
+    updateProgBar();
+    setTimeout(() => displayResult(simResult, d), 120);
+  } catch(e) {
+    alert('エラー: ' + e.message);
+  }
+}
+
+function collectData() {
+  const age = parseInt(document.getElementById('currentAge').value);
+  const income = parseInt(document.getElementById('annualIncome').value);
+  const savings = parseInt(document.getElementById('currentSavings').value);
+  const marital = document.querySelector('input[name="marital"]:checked').value;
+  const spouseInc = marital === 'married' ? parseInt(document.getElementById('spouseIncome').value) : 0;
+  const contrib = parseInt(document.getElementById('monthlyContrib').value);
+  const dcTarget = parseInt(document.getElementById('dcTarget').value);
+  const currentDC = parseInt(document.getElementById('currentDC').value);
+
+  // 加重平均利回り
+  const tyAge = parseInt(document.getElementById('currentAge').value) || 35;
+  const tyYrs = 65 - tyAge;
+  const tyR = tyYrs > 25 ? 0.060 : tyYrs > 15 ? 0.055 : tyYrs > 10 ? 0.045 : tyYrs > 5 ? 0.035 : 0.025;
+  const alloc = {
+    ds: parseInt(document.getElementById('s_ds').value)/100,
+    fs: parseInt(document.getElementById('s_fs').value)/100,
+    db: parseInt(document.getElementById('s_db').value)/100,
+    fb: parseInt(document.getElementById('s_fb').value)/100,
+    re: parseInt(document.getElementById('s_re').value)/100,
+    ty: parseInt(document.getElementById('s_ty').value)/100,
+  };
+  const rate = alloc.ds*0.045 + alloc.fs*0.070 + alloc.db*0.015 + alloc.fb*0.030 + alloc.re*0.040 + alloc.ty*tyR;
+
+  // 子供
+  const children = [];
+  document.querySelectorAll('.child-item').forEach(el => {
+    const id = el.id.replace('child-','');
+    const ageEl = document.getElementById('cAge'+id);
+    if (!ageEl) return;
+    const schoolEl = document.querySelector(`input[name="cSchool${id}"]:checked`);
+    const univEl = document.querySelector(`input[name="cUniv${id}"]:checked`);
+    children.push({ age: parseInt(ageEl.value)||0, school: schoolEl?.value||'public', univ: univEl?.value||'public' });
+  });
+
+  const housingType = document.querySelector('input[name="housing"]:checked').value;
+  let housing = { type: housingType };
+  if (housingType === 'renting') housing.rent = parseInt(document.getElementById('monthlyRent').value);
+  else if (housingType === 'planning') {
+    housing.price = parseInt(document.getElementById('purchasePrice').value);
+    housing.down = parseInt(document.getElementById('downPayment').value);
+    housing.age = parseInt(document.getElementById('purchaseAge').value);
+  }
+
+  const carOwn = document.querySelector('input[name="car"]:checked').value === 'yes';
+  const car = carOwn ? {
+    inspect: parseInt(document.getElementById('carInspect').value),
+    cycle: parseInt(document.getElementById('carCycle').value),
+    cost: parseInt(document.getElementById('carCost').value)
+  } : null;
+
+  const retireAge = parseInt(document.getElementById('retireAge').value);
+  const workEnd = parseInt(document.getElementById('workEndAge').value);
+  const sevType = document.querySelector('input[name="severance"]:checked').value;
+  const severance = sevType === 'known' ? parseInt(document.getElementById('severanceAmt').value) : sevType === 'unknown' ? 15000000 : 0;
+  const postRetire = document.querySelector('input[name="postRetire"]:checked').value;
+  const reemploy = postRetire === 'reemploy' ? parseInt(document.getElementById('reemployIncome').value) : 0;
+  const pension = parseInt(document.getElementById('pensionAmt').value);
+  const spousePension = parseInt(document.getElementById('spousePension').value)||0;
+  const ecType = document.querySelector('input[name="elderCare"]:checked').value;
+  const elderCare = ecType === 'custom' ? parseInt(document.getElementById('elderCareAmt').value) : 500000;
+  const ins = parseInt(document.getElementById('lifeIns').value) + parseInt(document.getElementById('medIns').value);
+
+  // DC受取設定
+  const dcReceive = document.querySelector('input[name="dcReceive"]:checked')?.value || 'lump';
+  const dcAnnuityYears = parseInt(document.getElementById('dcAnnuityYears').value) || 10;
+  const dcMixedPct = parseInt(document.getElementById('dcMixedPct').value) || 50;
+
+  return { age, income, savings, spouseInc, contrib, dcTarget, currentDC, rate, children, housing, car, retireAge, workEnd, severance, reemploy, pension, spousePension, elderCare, ins, dcReceive, dcAnnuityYears, dcMixedPct };
+}
+
+function simulate(d) {
+  const res = { 
+    ages:[], assets:[], dcAssets:[], income:[], expenses:[], 
+    lifeEvents:[] // ライフイベント記録
+  };
+  let assets = d.savings, dcAssets = d.currentDC;
+  const DC_MAX_AGE = 70;
+  let dcReceiveStarted = false;
+  let dcReceiveRemaining = 0;
+  let dcAnnualReceive = 0;
+
+  for (let age = d.age; age <= 90; age++) {
+    let inc = 0, exp = 0;
+    const events = [];
+
+    // 収入
+    if (age < d.retireAge) {
+      inc = d.income + d.spouseInc;
+    } else if (age < d.workEnd) {
+      inc = d.reemploy;
+      if (age === d.retireAge) events.push('再雇用開始');
+    }
+    
+    if (age >= 65) {
+      inc += d.pension + d.spousePension;
+      if (age === 65) events.push('公的年金受給開始');
+    }
+    
+    if (age === d.retireAge) {
+      assets += d.severance;
+      events.push(`退職（退職金${(d.severance/10000).toFixed(0)}万円）`);
+    }
+
+    // DC運用（退職まで掛金あり、その後受取開始まで運用のみ）
+    if (!dcReceiveStarted) {
+      if (age < d.retireAge && age < DC_MAX_AGE) {
+        dcAssets = dcAssets * (1 + d.rate) + d.contrib * 12;
+      } else if (age < DC_MAX_AGE) {
+        dcAssets = dcAssets * (1 + d.rate);
+      }
+    }
+
+    // DC受取開始（退職時 = retireAge から）
+    if (age === d.retireAge && !dcReceiveStarted) {
+      dcReceiveStarted = true;
+      const dcTotal = dcAssets;
+      
+      if (d.dcReceive === 'lump') {
+        // 一時金（一括）
+        assets += dcTotal;
+        dcAssets = 0;
+        events.push(`DC一時金受取（${(dcTotal/10000).toFixed(0)}万円）`);
+      } else if (d.dcReceive === 'annuity') {
+        // 年金（分割）
+        dcReceiveRemaining = d.dcAnnuityYears;
+        dcAnnualReceive = dcTotal / d.dcAnnuityYears;
+        events.push(`DC年金受取開始（${d.dcAnnuityYears}年間）`);
+      } else if (d.dcReceive === 'mixed') {
+        // 併給
+        const lumpPct = d.dcMixedPct / 100;
+        const lumpAmt = dcTotal * lumpPct;
+        const annuityAmt = dcTotal * (1 - lumpPct);
+        assets += lumpAmt;
+        dcAssets = annuityAmt;
+        dcReceiveRemaining = d.dcAnnuityYears;
+        dcAnnualReceive = annuityAmt / d.dcAnnuityYears;
+        events.push(`DC併給受取開始（一時金${(lumpAmt/10000).toFixed(0)}万円、年金${d.dcAnnuityYears}年）`);
+      }
+    }
+
+    // DC年金受取中
+    if (dcReceiveStarted && dcReceiveRemaining > 0 && age >= d.retireAge) {
+      const receive = Math.min(dcAnnualReceive, dcAssets);
+      assets += receive;
+      dcAssets -= receive;
+      inc += receive;
+      dcReceiveRemaining--;
+      if (dcReceiveRemaining === 0 || dcAssets <= 0) {
+        dcAssets = 0;
+        events.push('DC年金受取終了');
+      }
+    }
+
+    // 支出：基本生活費
+    exp += (d.income + d.spouseInc) * (age < d.retireAge ? 0.62 : 0.50);
+
+    // 住宅
+    if (d.housing.type === 'renting') {
+      exp += d.housing.rent * 12;
+    } else if (d.housing.type === 'planning') {
+      if (age === d.housing.age) {
+        assets -= d.housing.down;
+        const loan = d.housing.price - d.housing.down;
+        exp += loan * 0.0135 / 12 / (1 - Math.pow(1.0135/12, -360)) * 12;
+        events.push(`住宅購入（${(d.housing.price/10000).toFixed(0)}万円）`);
+      } else if (age > d.housing.age && age < d.housing.age + 30) {
+        const loan = d.housing.price - d.housing.down;
+        exp += loan * 0.0135 / 12 / (1 - Math.pow(1.0135/12, -360)) * 12;
+      }
+      if (age === d.housing.age + 30) events.push('住宅ローン完済');
+    }
+
+    // 車（75歳以降は買い替えなし・車検費用のみ）
+    if (d.car) {
+      if ((age - d.age) % 2 === 0) {
+        exp += d.car.inspect;
+        events.push('車検');
+      }
+      if (age < 75 && (age - d.age) > 0 && (age - d.age) % d.car.cycle === 0) {
+        exp += d.car.cost;
+        events.push(`車買替（${(d.car.cost/10000).toFixed(0)}万円）`);
+      }
+    }
+
+    // 保険
+    exp += d.ins;
+
+    // 教育費
+    d.children.forEach((c, idx) => {
+      const ca = c.age + (age - d.age);
+      if (ca === 6) events.push(`子${idx+1}小学校入学`);
+      if (ca === 13) events.push(`子${idx+1}中学校入学`);
+      if (ca === 16) events.push(`子${idx+1}高校入学`);
+      if (ca === 19 && c.univ !== 'none') events.push(`子${idx+1}大学入学`);
+      if (ca === 22 && c.univ !== 'none') events.push(`子${idx+1}大学卒業`);
+      
+      if (ca >= 6 && ca <= 12) exp += c.school === 'public' ? 320000 : 1500000;
+      else if (ca >= 13 && ca <= 15) exp += c.school === 'public' ? 480000 : 1400000;
+      else if (ca >= 16 && ca <= 18) exp += c.school === 'public' ? 450000 : 1000000;
+      else if (ca >= 19 && ca <= 22 && c.univ !== 'none') exp += c.univ === 'public' ? 540000 : 1500000;
+    });
+
+    // 老後医療介護
+    if (age >= 65) exp += d.elderCare;
+
+    assets += (inc - exp) * 1.01;
+
+    res.ages.push(age);
+    res.assets.push(Math.round(assets/10000));
+    res.dcAssets.push(Math.round(dcAssets/10000));
+    res.income.push(Math.round(inc/10000));
+    res.expenses.push(Math.round(exp/10000));
+    res.lifeEvents.push(events);
+  }
+  return res;
+}
+
+function displayResult(r, d) {
+  const retIdx = r.ages.indexOf(d.retireAge);
+  const idx90 = r.ages.indexOf(90);
+  document.getElementById('rc_dc').textContent = r.dcAssets[retIdx]?.toLocaleString() || '0';
+  document.getElementById('rc_ret').textContent = ((r.assets[retIdx]||0)+(r.dcAssets[retIdx]||0)).toLocaleString();
+  document.getElementById('rc_90').textContent = ((r.assets[idx90]||0)+(r.dcAssets[idx90]||0)).toLocaleString();
+  drawChart('assetsChart', 'line', r.ages,
+    [{label:'総資産（DC含む）', data:r.assets.map((v,i)=>v+r.dcAssets[i]), borderColor:'#2563eb', backgroundColor:'rgba(37,99,235,.1)', fill:true, tension:.4},
+     {label:'DC資産', data:r.dcAssets, borderColor:'#10b981', backgroundColor:'rgba(16,185,129,.1)', fill:true, tension:.4}]);
+  drawChart('cashChart', 'bar', r.ages,
+    [{label:'収入', data:r.income, backgroundColor:'rgba(16,185,129,.7)'},
+     {label:'支出', data:r.expenses, backgroundColor:'rgba(239,68,68,.7)'}]);
+  drawChart('dcChart', 'line', r.ages,
+    [{label:'DC資産額', data:r.dcAssets, borderColor:'#8b5cf6', backgroundColor:'rgba(139,92,246,.1)', fill:true, tension:.4}]);
+  
+  // ライフイベント表描画
+  drawLifeEventTable(r, d);
+}
+
+function drawLifeEventTable(r, d) {
+  const table = document.getElementById('lifeEventTable');
+  let html = '<thead><tr><th>年齢</th><th>収入</th><th>支出</th><th>貯蓄増減</th><th>総資産</th><th>DC資産</th><th>ライフイベント</th></tr></thead><tbody>';
+  
+  r.ages.forEach((age, i) => {
+    const inc = r.income[i];
+    const exp = r.expenses[i];
+    const diff = inc - exp;
+    const diffClass = diff >= 0 ? 'td-good' : 'td-warn';
+    const events = r.lifeEvents[i].join('、') || '-';
+    
+    html += `<tr>
+      <td style="font-weight:600">${age}歳</td>
+      <td class="td-num">${inc.toLocaleString()}</td>
+      <td class="td-num">${exp.toLocaleString()}</td>
+      <td class="td-num ${diffClass}">${diff >= 0 ? '+' : ''}${diff.toLocaleString()}</td>
+      <td class="td-num">${r.assets[i].toLocaleString()}</td>
+      <td class="td-num">${r.dcAssets[i].toLocaleString()}</td>
+      <td style="font-size:12px;line-height:1.5">${events}</td>
+    </tr>`;
+  });
+  
+  html += '</tbody>';
+  table.innerHTML = html;
+}
+
+// ===== SVGチャート（CDN不要・iOS file:// 対応） =====
+function drawChart(id, type, labels, datasets) {
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+  const wrap = canvas.parentElement;
+  canvas.style.display = 'none';
+  let svg = wrap.querySelector('svg.dc-chart');
+  if (svg) svg.remove();
+  svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('class','dc-chart');
+  svg.style.cssText = 'width:100%;height:260px;display:block;overflow:visible;';
+  wrap.appendChild(svg);
+  // サイズ確定後に描画
+  setTimeout(() => _renderSVGChart(svg, type, labels, datasets), 10);
+}
+
+function _renderSVGChart(svg, type, labels, datasets) {
+  const W = svg.getBoundingClientRect().width || svg.parentElement.clientWidth || 320;
+  const H = 260;
+  const pad = {top:24, right:16, bottom:56, left:56};
+  const cw = W - pad.left - pad.right;
+  const ch = H - pad.top - pad.bottom;
+  const ns = 'http://www.w3.org/2000/svg';
+
+  const allVals = datasets.flatMap(d => d.data || []).filter(v => typeof v === 'number');
+  if (!allVals.length) return;
+  const rawMin = Math.min(0, ...allVals);
+  const rawMax = Math.max(...allVals);
+  const vRange = (rawMax - rawMin) || 1;
+  const vMin = rawMin - vRange * 0.03;
+  const vMax = rawMax + vRange * 0.08;
+  const vSpan = vMax - vMin;
+
+  function xPos(i) { return pad.left + (labels.length <= 1 ? 0 : i / (labels.length-1)) * cw; }
+  function yPos(v) { return pad.top + ch - ((v - vMin) / vSpan) * ch; }
+  function fmtV(v) {
+    const a = Math.abs(v);
+    if (a >= 10000) return (v/10000).toFixed(1)+'億';
+    if (a >= 1000) return (v/1000).toFixed(0)+'千';
+    return Math.round(v)+'万';
+  }
+  function mk(tag, attrs, par) {
+    const e = document.createElementNS(ns, tag);
+    for (const [k,v] of Object.entries(attrs)) e.setAttribute(k,String(v));
+    if (par) par.appendChild(e);
+    return e;
+  }
+
+  // グリッド + Y軸
+  for (let i = 0; i <= 5; i++) {
+    const v = vMin + (vSpan/5)*i;
+    const y = yPos(v);
+    mk('line',{x1:pad.left,y1:y,x2:pad.left+cw,y2:y,stroke:'#e2e8f0','stroke-width':1},svg);
+    const t = mk('text',{x:pad.left-5,y:y+4,'text-anchor':'end','font-size':9,fill:'#94a3b8'},svg);
+    t.textContent = fmtV(v);
+  }
+  mk('line',{x1:pad.left,y1:pad.top+ch,x2:pad.left+cw,y2:pad.top+ch,stroke:'#94a3b8','stroke-width':1},svg);
+
+  // データ描画
+  const DEF_COLORS = ['#2563eb','#10b981','#8b5cf6','#f59e0b'];
+  if (type === 'bar') {
+    const grpW = cw / labels.length;
+    const bw = Math.max(2, grpW / (datasets.length+1));
+    labels.forEach((_,i) => {
+      datasets.forEach((ds, di) => {
+        const v = ds.data[i] || 0;
+        const rawC = ds.backgroundColor || DEF_COLORS[di%DEF_COLORS.length];
+        const col = typeof rawC === 'string' ? rawC.replace(/rgba?\([^)]+\)/,'') || rawC : DEF_COLORS[di%DEF_COLORS.length];
+        const solidCol = col.startsWith('#') ? col : DEF_COLORS[di%DEF_COLORS.length];
+        const x = pad.left + i*grpW + di*(bw+1) + 2;
+        const y0 = yPos(0), y1 = yPos(v);
+        mk('rect',{x:x,y:Math.min(y0,y1),width:bw,height:Math.max(1,Math.abs(y0-y1)),fill:solidCol,rx:2},svg);
+      });
+    });
+  } else {
+    datasets.forEach((ds,di) => {
+      const col = (ds.borderColor || DEF_COLORS[di%DEF_COLORS.length]);
+      const solidCol = col.startsWith('#') ? col : DEF_COLORS[di%DEF_COLORS.length];
+      const pts = labels.map((_,i) => xPos(i).toFixed(1)+','+yPos(ds.data[i]||0).toFixed(1));
+      if (ds.fill) {
+        const area = pad.left+','+yPos(0)+' '+pts.join(' ')+' '+xPos(labels.length-1)+','+yPos(0);
+        mk('polygon',{points:area,fill:solidCol+'22',stroke:'none'},svg);
+      }
+      mk('polyline',{points:pts.join(' '),fill:'none',stroke:solidCol,'stroke-width':2,'stroke-linejoin':'round'},svg);
+    });
+  }
+
+  // X軸ラベル
+  const step = Math.ceil(labels.length/10);
+  labels.forEach((lbl,i) => {
+    if (i % step !== 0 && i !== labels.length-1) return;
+    const t = mk('text',{x:xPos(i),y:pad.top+ch+14,'text-anchor':'middle','font-size':9,fill:'#94a3b8'},svg);
+    t.textContent = String(lbl);
+  });
+
+  // 凡例
+  let lx = pad.left;
+  const ly = H - 8;
+  datasets.forEach((ds,di) => {
+    const col = (ds.borderColor||ds.backgroundColor||DEF_COLORS[di%DEF_COLORS.length]);
+    const solidCol = (typeof col==='string'&&col.startsWith('#')) ? col : DEF_COLORS[di%DEF_COLORS.length];
+    mk('rect',{x:lx,y:ly-9,width:10,height:10,fill:solidCol,rx:2},svg);
+    const t = mk('text',{x:lx+13,y:ly,'font-size':10,fill:'#64748b'},svg);
+    t.textContent = ds.label || '';
+    lx += Math.max(50, (ds.label||'').length*7+20);
+  });
+}
+
+function addBubble(type, content, stopReason) {
+  const area = document.getElementById('chatArea');
+  if (!area) { console.error('❌ chatArea not found!'); return; }
+  console.log('💬 addBubble:', type, content ? content.substring(0,40) : '(empty)');
+  // Q&Aページが active でなければ表示切替
+  const qaPage = document.getElementById('page-qa');
+  if (qaPage && !qaPage.classList.contains('active')) {
+    console.warn('⚠️ page-qa が非active → 強制表示');
+    showPage('qa');
+  }
+  // welcomeChat を確実に隠す
+  const wc = document.getElementById('welcomeChat');
+  if (wc) wc.style.display = 'none';
+  // デバッグ: chatArea のサイズを確認
+  console.log('📐 chatArea size:', area.offsetWidth, 'x', area.offsetHeight, 'scrollHeight:', area.scrollHeight, 'children:', area.children.length);
+  const now = new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+  const div = document.createElement('div');
+  div.className = 'msg ' + (type === 'user' ? 'user' : 'ai');
+
+  const av = document.createElement('div');
+  av.className = 'msg-avatar';
+  av.textContent = type === 'user' ? '👤' : '🤖';
+
+  const body = document.createElement('div');
+  body.className = 'msg-body';
+
+  const bub = document.createElement('div');
+  bub.className = 'bubble';
+
+  if (type === 'user') {
+    bub.textContent = content;
+  } else if (type === 'error') {
+    bub.style.cssText = 'background:#fff1f2;border:1.5px solid #ef4444;color:#dc2626;border-radius:14px;padding:12px 15px;font-size:13px;line-height:1.7;white-space:pre-wrap;';
+    const errText = content.replace('⚠️ ','').replace(/\n/g, '<br>');
+    bub.innerHTML = '<strong style="font-size:14px;">⚠️ エラー</strong><br>' + errText;
+  } else {
+    try {
+      bub.innerHTML = parseMD(content);
+    } catch(parseErr) {
+      console.error('❌ parseMD エラー:', parseErr);
+      bub.textContent = content; // フォールバック: プレーンテキスト
+    }
+
+    // 途中で切れた場合（stop_reason === max_tokens）→「続きを表示」ボタン
+    if (stopReason === 'max_tokens') {
+      const continueBar = document.createElement('div');
+      continueBar.style.cssText = 'display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:10px;border-top:1px dashed #fbbf24;';
+      const continueLabel = document.createElement('span');
+      continueLabel.style.cssText = 'font-size:12px;color:#d97706;';
+      continueLabel.textContent = '回答が途中です';
+      continueBar.appendChild(continueLabel);
+      const continueBtn = document.createElement('button');
+      continueBtn.textContent = '続きを表示する →';
+      continueBtn.style.cssText = 'background:#f59e0b;color:#fff;border:none;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;';
+      continueBtn.onclick = () => { continueBar.remove(); continueAnswer(); };
+      continueBar.appendChild(continueBtn);
+      bub.appendChild(continueBar);
+    }
+  }
+
+  const t = document.createElement('div');
+  t.className = 'msg-time';
+  t.textContent = now;
+
+  body.appendChild(bub);
+  body.appendChild(t);
+  div.appendChild(av);
+  div.appendChild(body);
+  area.appendChild(div);
+  // スクロールを確実に（Safariでは複数フレームが必要な場合がある）
+  try {
+    area.scrollTop = area.scrollHeight;
+    setTimeout(() => { try { area.scrollTop = area.scrollHeight; } catch(e){} }, 50);
+  } catch(e) {}
+}
+
+function parseMD(text) {
+  if (!text) return '';
+  // 安全なHTMLエスケープ（テキストノード用）
+  function esc(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+  // テーブル変換
+  function convertTable(block) {
+    try {
+      const lines = block.trim().split('\n').filter(l => l.trim());
+      if (lines.length < 3) return esc(block);
+      const headers = lines[0].split('|').map(s=>s.trim()).filter(s=>s);
+      const rows = lines.slice(2).map(l=>l.split('|').map(s=>s.trim()).filter(s=>s));
+      if (!headers.length) return esc(block);
+      let html = '<div class="md-table-wrap"><table class="md-table"><thead><tr>';
+      headers.forEach(h => { html += '<th>' + esc(h) + '</th>'; });
+      html += '</tr></thead><tbody>';
+      rows.forEach(row => {
+        html += '<tr>';
+        row.forEach(cell => {
+          const isNum = /^[\d,. %\-+]+$/.test(cell.replace(/[万円]/g,'').trim());
+          html += (isNum ? '<td class="td-num">' : '<td>') + esc(cell) + '</td>';
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table></div>';
+      return html;
+    } catch(e) { return esc(block); }
+  }
+
+  // ブロック単位で処理（行ごと）
+  const lines = text.split('\n');
+  const out = [];
+  let inTable = false;
+  let tableLines = [];
+  let listItems = [];
+
+  function flushList() {
+    if (listItems.length) {
+      out.push('<ul style="padding-left:18px;margin:8px 0;">' + listItems.join('') + '</ul>');
+      listItems = [];
+    }
+  }
+  function flushTable() {
+    if (tableLines.length) {
+      out.push(convertTable(tableLines.join('\n')));
+      tableLines = []; inTable = false;
+    }
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const raw = line.trimStart();
+
+    // テーブル行検出
+    if (raw.startsWith('|')) {
+      if (!inTable) { flushList(); inTable = true; }
+      tableLines.push(line);
+      continue;
+    } else if (inTable) {
+      flushTable();
+    }
+
+    // 見出し
+    if (raw.startsWith('### ')) {
+      flushList();
+      out.push('<h3>' + inlineFormat(raw.slice(4)) + '</h3>');
+    } else if (raw.startsWith('## ')) {
+      flushList();
+      out.push('<h3 style="font-size:16px;">' + inlineFormat(raw.slice(3)) + '</h3>');
+    } else if (raw.startsWith('# ')) {
+      flushList();
+      out.push('<h3 style="font-size:17px;">' + inlineFormat(raw.slice(2)) + '</h3>');
+    }
+    // 水平線
+    else if (/^-{3,}$/.test(raw)) {
+      flushList();
+      out.push('<hr style="border:none;border-top:1px solid #e2e8f0;margin:12px 0;">');
+    }
+    // 引用
+    else if (raw.startsWith('> ')) {
+      flushList();
+      out.push('<div class="bx">' + inlineFormat(raw.slice(2)) + '</div>');
+    }
+    // リスト
+    else if (/^[-*・] /.test(raw) || /^  [-*・] /.test(line)) {
+      const indent = line.startsWith('  ') ? ' style="margin-left:16px"' : '';
+      const txt = raw.replace(/^[-*・] /, '');
+      listItems.push('<li' + indent + '>' + inlineFormat(txt) + '</li>');
+    }
+    else if (/^\d+\. /.test(raw)) {
+      listItems.push('<li>' + inlineFormat(raw.replace(/^\d+\. /, '')) + '</li>');
+    }
+    // 空行
+    else if (raw === '') {
+      flushList();
+      out.push('');
+    }
+    // 通常段落
+    else {
+      flushList();
+      out.push('<p>' + inlineFormat(raw) + '</p>');
+    }
+  }
+  flushList();
+  flushTable();
+
+  return out.filter(l => l !== '').join('\n');
+}
+
+function inlineFormat(text) {
+  if (!text) return '';
+  // HTMLエスケープしてからインライン要素を変換
+  let s = String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  // **bold**
+  s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  // *italic*
+  s = s.replace(/\*([^*]+?)\*/g, '<em>$1</em>');
+  // `code`
+  s = s.replace(/`([^`]+?)`/g, '<code>$1</code>');
+  return s;
+}
+
+function showLoading() {
+  const id = 'ld' + Date.now();
+  const area = document.getElementById('chatArea');
+  const d = document.createElement('div');
+  d.className = 'msg ai'; d.id = id;
+  d.innerHTML = '<div class="msg-avatar">🤖</div><div class="msg-body"><div class="bubble" style="padding:13px 16px;"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="font-size:13px;color:var(--muted);margin-left:8px;">考え中...</span></div></div></div>';
+  area.appendChild(d);
+  area.scrollTop = area.scrollHeight;
+  return id;
+}
+function removeLoading(id) { if (id) document.getElementById(id)?.remove(); }
+
+
+function resetChat() {
+  if (!confirm('チャット履歴をリセットしますか？')) return;
+  chatMsgs = [];
+  continueCount = 0;
+  const area = document.getElementById('chatArea');
+  // ウェルカム以外のメッセージを削除
+  Array.from(area.children).forEach(el => {
+    if (!el.id || el.id !== 'welcomeChat') el.remove();
+  });
+  const wc = document.getElementById('welcomeChat');
+  if (wc) wc.style.display = '';
+}
+
+function resetSim() {
+  if (confirm('入力内容をリセットしますか？')) {
+    simStep = 1;
+    simResult = null;
+    childCount = 0;
+    document.getElementById('childrenList').innerHTML = '';
+    updateProgBar();
+  }
+}
+
+function goToQAFromResult() {
+  _doGoToQA();
+}
+
+function _buildSimCtx() {
+  const rc_dc = document.getElementById('rc_dc').textContent;
+  const rc_ret = document.getElementById('rc_ret').textContent;
+  const rc_90 = document.getElementById('rc_90').textContent;
+  const age = document.getElementById('currentAge').value;
+  const income = (parseInt(document.getElementById('annualIncome').value)/10000).toFixed(0);
+  const retireAge = document.getElementById('retireAge').value;
+  const contrib = (parseInt(document.getElementById('monthlyContrib').value)/10000).toFixed(1);
+  const dcReceiveType = document.querySelector('input[name="dcReceive"]:checked')?.value || 'lump';
+  const dcLabel = dcReceiveType === 'lump' ? '一時金' : dcReceiveType === 'annuity' ? '年金' : '併給';
+  // Safari互換: 特殊Unicode文字(丸囲み数字等)を使わずプレーンテキストで構成
+  const lines = [
+    '私のライフプランシミュレーション結果についてDC専門家としてアドバイスをお願いします。',
+    '',
+    '[私のプロフィール]',
+    '現在 ' + age + '歳 / 年収 ' + income + '万円 / 退職予定 ' + retireAge + '歳',
+    'DC掛金 ' + contrib + '万円/月 / DC受取方法: ' + dcLabel,
+    '',
+    '[シミュレーション結果]',
+    'DC最終資産: ' + rc_dc + '万円',
+    '退職時の総資産(DC含む): ' + rc_ret + '万円',
+    '90歳時点の資産: ' + rc_90 + '万円',
+    '',
+    '以下の観点でアドバイスをお願いします:',
+    '(1) この資産計画の問題点・リスク',
+    '(2) DC受取方法(' + dcLabel + ')の最適性',
+    '(3) 節税戦略の改善余地',
+    '(4) 今後の資産配分の見直しポイント'
+  ];
+  return lines.join('\n');
+}
+
+// 重複送信防止フラグ
+let _simConsultPending = false;
+
+function _doGoToQA() {
+  if (_simConsultPending) { console.warn('_doGoToQA: 既に処理中'); return; }
+  _simConsultPending = true;
+
+  const badge = document.getElementById('qaBadge');
+  if (badge) badge.style.display = 'block';
+  const ctx = _buildSimCtx();
+
+  // まずQ&Aページを表示
+  showPage('qa');
+
+  // welcomeChat を隠す
+  const wc = document.getElementById('welcomeChat');
+  if (wc) wc.style.display = 'none';
+
+  // ページ描画を待ってから送信（100ms で十分）
+  setTimeout(() => {
+    _simConsultPending = false;
+    if (chatLoading) {
+      console.warn('_doGoToQA: chatLoading=true のためスキップ');
+      return;
+    }
+    const inp = document.getElementById('qaMsgInput');
+    if (!inp) { console.error('qaMsgInput not found'); return; }
+    inp.value = ctx;
+    inp.style.height = 'auto';
+    inp.style.height = Math.min(inp.scrollHeight, 110) + 'px';
+    document.getElementById('sendBtn').disabled = false;
+    sendMsg();
+  }, 150);
+}
+
+// ===== Q&A AIチャット =====
+// ========================================
+// GASバックエンドURL設定
+// Google Apps ScriptをデプロイしたURLを設定してください
+// ========================================
+const GAS_BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxotILQLHbo77NMyJAx2WpmLtyge9r34nJQw8UUL-Psm7ql9o3S7edKPFHg1CMVm8mJ/exec';
+
+// chatMsgs: API送信用の会話履歴 (role: user/assistant のみ、構造保証済み)
+// 連続する「続けて」でも壊れないよう、continueAnswerは特別管理
+let chatMsgs = [];
+let chatLoading = false;
+let lastApiCall = 0;
+let apiCallCount = 0;
+let last429Error = false;
+let continueCount = 0; // 連続「続けて」カウンタ (上限管理用)
+
+const SYS = `あなたは確定拠出年金（DC）の最高レベルの専門家AIアドバイザーです。
+DC専門家（ファイナンシャルプランナー資格保有）の知識で、初歩から高度な質問まで的確に回答します。
+
+【2025〜2027年最新改正情報（必ず織り込む）】
+(1) iDeCo掛金上限の大幅引き上げ（2026年12月1日施行・2027年1月26日引落分から）
+・企業年金なし会社員：月2.3万円 -> 月6.2万円（約2.7倍）
+・企業年金あり会社員・公務員：月2万円 -> 企業年金との合計で月6.2万円（iDeCo単体上限撤廃）
+・公務員：共済掛金相当額8,000円差引き、最大月5.4万円が目安
+・自営業者（第1号）：月6.8万円 -> 月7.5万円 / 専業主婦・夫（第3号）：月2.3万円（変更なし）
+(2) 加入可能年齢：65歳未満 -> 70歳未満（2027年1月〜）
+(3) マッチング拠出「事業主掛金超過禁止」の撤廃（2026年4月1日〜）
+(4) 「5年ルール」->「10年ルール」に変更（重要！退職が近い方は要注意）
+(5) 事業主証明書が不要に（2024年12月実施済）
+
+【退職所得控除】勤続20年以下：40万円 x 勤続年数。20年超：800万円+70万円 x (勤続-20)
+【税制優遇】掛金：全額所得控除。節税額 = 年間掛金 x (所得税率+住民税10%)
+【所得税率】195万以下5%、195〜330万10%、330〜695万20%、695〜900万23%、900〜1800万33%、1800〜4000万40%、4000万超45%
+
+【回答スタイル】
+・質問レベルに応じて深度を自動調整（初心者には平易に、専門的質問には詳細に）
+・具体的な数字・計算例を積極的に示す
+・改正の施行時期・注意点を明確に記載
+・Markdownで見やすく構造化（**太字**、箇条書き、表など）
+・2000万円以上の格差が生じうる制度改正については積極的に情報提供する
+・投資助言ではなく情報提供・教育的回答として回答する
+・日本語で回答する`;
+
+// qaMsgInput listener -> DOMContentLoaded内で設定
+
+function autoResizeQA(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 110) + 'px';
+  document.getElementById('sendBtn').disabled = el.value.trim() === '' || chatLoading;
+}
+
+function handleQAKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (!document.getElementById('sendBtn').disabled) sendMsg(); }
+}
+
+function quickAsk(text) {
+  const inp = document.getElementById('qaMsgInput');
+  const btn = document.getElementById('sendBtn');
+  inp.value = text;
+  inp.style.height = 'auto';
+  inp.style.height = Math.min(inp.scrollHeight, 110) + 'px';
+  if (btn) btn.disabled = false;
+  sendMsg();
+}
+
+async function sendMsg() {
+  const inp = document.getElementById('qaMsgInput');
+  const text = inp.value.trim();
+  if (!text || chatLoading) return;
+
+  // レート制限チェック（429エラー対策）
+  const now = Date.now();
+  const timeSinceLastCall = now - lastApiCall;
+  const minWait = last429Error ? 5000 : 2500;
+  
+  if (timeSinceLastCall < minWait) {
+    const waitTime = minWait - timeSinceLastCall;
+    console.log(`⏱️ ${(waitTime/1000).toFixed(1)}秒待機${last429Error ? '(429エラー後)' : ''}`);
+    await new Promise(resolve => setTimeout(resolve, waitTime));
+  }
+  last429Error = false;
+  lastApiCall = Date.now();
+  apiCallCount++;
+  console.log(`API呼び出し #${apiCallCount} (前回から${timeSinceLastCall}ms経過)`);
+
+  const wc = document.getElementById('welcomeChat');
+  if (wc) wc.style.display = 'none';
+
+  addBubble('user', text);
+  chatMsgs.push({ role: 'user', content: text });
+  inp.value = '';
+  inp.style.height = 'auto';
+  document.getElementById('sendBtn').disabled = true;
+  chatLoading = true;
+
+  let lid;
+  try { lid = showLoading(); } catch(e) { lid = null; }
+
+
+  try {
+    const validMessages = buildValidMessages(chatMsgs, 12);
+    if (!validMessages || validMessages.length === 0) {
+      throw new Error('送信可能なメッセージがありません');
+    }
+
+    const data = await callAnthropicAPI(validMessages, 4096);
+    removeLoading(lid);
+
+    // data.content の安全なアクセス
+    if (!data || !data.content || !data.content[0] || !data.content[0].text) {
+      console.error('❌ APIレスポンス異常:', JSON.stringify(data));
+      throw new Error('APIレスポンスの形式が不正です');
+    }
+    const answer = data.content[0].text;
+    const stopReason = data.stop_reason;
+    console.log('📝 answer length:', answer.length, 'chars, stop:', stopReason);
+
+    chatMsgs.push({ role: 'assistant', content: answer });
+    continueCount = 0;
+    addBubble('ai', answer, stopReason);
+    console.log('✅ addBubble ai 完了');
+
+  } catch (e) {
+    console.error('❌ sendMsg エラー:', e.name, e.message, e.stack);
+    removeLoading(lid);
+    addBubble('error', e.message);
+    // APIキーエラー処理: GAS側で管理
+  } finally {
+    chatLoading = false;
+    document.getElementById('sendBtn').disabled = document.getElementById('qaMsgInput').value.trim() === '';
+  }
+}
+
+// 続きを表示
+async function continueAnswer() {
+  if (chatLoading) return;
+  
+  continueCount++;
+  // 連続「続けて」が多すぎる場合は会話履歴をリセット防止のため上限設定
+  if (continueCount > 8) {
+    addBubble('error', '⚠️ 続きの取得上限（8回）に達しました。新しい質問を入力してください。');
+    continueCount = 0;
+    return;
+  }
+
+  // レート制限チェック
+  const now = Date.now();
+  const timeSinceLastCall = now - lastApiCall;
+  const minWait = last429Error ? 5000 : 2500;
+  if (timeSinceLastCall < minWait) {
+    await new Promise(resolve => setTimeout(resolve, minWait - timeSinceLastCall));
+  }
+  last429Error = false;
+  lastApiCall = Date.now();
+  
+  // continuePromptはAPIに送るが chatMsgs には永続させない
+  // → 送信用の一時配列を作る
+  const continuePrompt = '中断した箇所から続きを出力してください。';
+  const tempMsgs = [...chatMsgs, { role: 'user', content: continuePrompt }];
+  
+  chatLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+  const lid = showLoading();
+  
+  try {
+    const validMessages = buildValidMessages(tempMsgs, 16);
+    if (!validMessages || validMessages.length === 0) {
+      throw new Error('送信可能なメッセージがありません');
+    }
+
+    const data = await callAnthropicAPI(validMessages, 4096);
+    removeLoading(lid);
+
+    const answer = data.content[0].text;
+    // chatMsgsには続きをassistantとして追加（userのcontinuePromptは入れない）
+    // ただし最後のassistantと連続しないよう、前のassistantに結合する
+    const lastMsg = chatMsgs[chatMsgs.length - 1];
+    if (lastMsg && lastMsg.role === 'assistant') {
+      lastMsg.content += '\n\n' + answer; // 前の回答に結合
+    } else {
+      chatMsgs.push({ role: 'assistant', content: answer });
+    }
+    addBubble('ai', answer, data.stop_reason);
+    
+  } catch(e) {
+    removeLoading(lid);
+    addBubble('error', '⚠️ ' + e.message);
+  }
+  
+  chatLoading = false;
+  document.getElementById('sendBtn').disabled = false;
+}
+
+// ===== メッセージ正規化ユーティリティ =====
+function buildValidMessages(rawMsgs, limit = 16) {
+  // 1. 基本フィルタ：role/contentが正常な文字列のみ
+  const filtered = rawMsgs.slice(-limit).filter(m => {
+    if (!m || typeof m !== 'object') return false;
+    if (m.role !== 'user' && m.role !== 'assistant') return false;
+    if (typeof m.content !== 'string' || m.content.trim() === '') return false;
+    // NUL文字・制御文字を除去（patternエラーの原因）
+    if (/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(m.content)) return false;
+    return true;
+  }).map(m => ({
+    role: m.role,
+    // 制御文字をサニタイズ（念のため）
+    content: m.content.trim().replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '')
+  }));
+
+  // 2. 先頭のassistantを除去
+  while (filtered.length > 0 && filtered[0].role === 'assistant') {
+    filtered.shift();
+  }
+
+  // 3. 連続する同じroleを除去
+  // user連続 → 後のものを残す
+  // assistant連続 → 内容を結合して1つに
+  const deduped = [];
+  for (const m of filtered) {
+    if (deduped.length > 0 && deduped[deduped.length - 1].role === m.role) {
+      if (m.role === 'assistant') {
+        // assistant連続は結合
+        deduped[deduped.length - 1].content += '\n\n' + m.content;
+      } else {
+        // user連続は後のものを残す
+        deduped[deduped.length - 1] = m;
+      }
+    } else {
+      deduped.push({...m}); // シャローコピーで安全に追加
+    }
+  }
+
+  if (deduped.length === 0) {
+    console.error('❌ buildValidMessages: メッセージが空');
+    return null;
+  }
+
+  // 4. 最後がuserで終わることを確認
+  if (deduped[deduped.length - 1].role !== 'user') {
+    console.error('❌ buildValidMessages: 最後がuserではない:', deduped[deduped.length - 1].role);
+    return null;
+  }
+
+  console.log('✅ 正規化後メッセージ:', deduped.map(m => m.role).join(' → '), '計', deduped.length, '件');
+  return deduped;
+}
+
+async function callAnthropicAPI(messages, maxTokens = 3000) {
+  const GAS_URL = GAS_BACKEND_URL;
+
+  console.log('📡 GAS送信:', messages.map(m => m.role).join('->'), 'max_tokens:', maxTokens);
+
+  let res;
+  try {
+    res = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      redirect: 'follow',
+      mode: 'cors',
+      body: JSON.stringify({
+        system: SYS,
+        messages: messages,
+        max_tokens: maxTokens
+      })
+    });
+  } catch (fetchErr) {
+    console.error('❌ GAS fetch失敗:', fetchErr.message);
+    throw new Error(fetchErr.message);
+  }
+
+  console.log('📡 GASレスポンス:', res.status);
+
+  const text = await res.text();
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch(e) {
+    console.error('❌ GASレスポンスパース失敗:', text.substring(0, 200));
+    throw new Error('サーバーからの応答が不正です。しばらく待ってから再試行してください。');
+  }
+
+  if (!res.ok || data.error) {
+    const msg = data.error || ('HTTPエラー ' + res.status);
+    console.error('❌ GASエラー:', msg);
+    if (res.status === 429) {
+      last429Error = true;
+      throw new Error('アクセスが集中しています。30秒後に再試行してください。');
+    }
+    throw new Error('エラー: ' + msg);
+  }
+
+  console.log('✅ GAS成功: stop_reason=', data.stop_reason);
+  return data;
+}
+
+// ===== 初期化（全関数定義後に配置） =====
+function _initApp() {
+  if (_initApp._done) return;
+  _initApp._done = true;
+
+  try { updateAlloc(); } catch(e) {}
+
+  // Q&A入力イベント
+  try {
+    const _inp = document.getElementById('qaMsgInput');
+    const _btn = document.getElementById('sendBtn');
+    if (_inp && _btn) {
+      _inp.addEventListener('input', function() {
+        _btn.disabled = _inp.value.trim() === '' || chatLoading;
+      });
+    }
+  } catch(e) {}
+
+  // モーダル背景クリック
+  try {
+    const _modal = document.getElementById('modalBg');
+    if (_modal) {
+      _modal.addEventListener('click', function(e) {
+        if (e.target === _modal) closeModal();
+      });
+    }
+  } catch(e) {}
+}
+document.addEventListener('DOMContentLoaded', _initApp);
+window.addEventListener('load', _initApp);
+
+</script>
+</body>
+</html>
